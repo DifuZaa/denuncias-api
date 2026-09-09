@@ -10,16 +10,10 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Denuncia escolar. Basado en el caso del Colegio Max Uhle: registra fecha
- * y hora automáticamente, y marca si el tipo de denuncia obliga a activar
- * el protocolo de la Ley 29719.
- */
 @Entity
 @Data
 public class Denuncia {
 
-    // Tipos de denuncia que activan el protocolo de la Ley 29719
     private static final List<String> TIPOS_QUE_ACTIVAN_PROTOCOLO =
             List.of("MALTRATO_PSICOLOGICO", "MALTRATO_FISICO", "ACOSO_ESCOLAR");
 

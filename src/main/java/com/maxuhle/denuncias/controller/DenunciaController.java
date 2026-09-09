@@ -18,20 +18,17 @@ public class DenunciaController {
         this.denunciaRepository = denunciaRepository;
     }
 
-    // POST /api/denuncias
     @PostMapping
     public ResponseEntity<Denuncia> crear(@RequestBody Denuncia denuncia) {
         Denuncia guardada = denunciaRepository.save(denuncia);
         return ResponseEntity.status(HttpStatus.CREATED).body(guardada);
     }
 
-    // GET /api/denuncias
     @GetMapping
     public List<Denuncia> listar() {
         return denunciaRepository.findAll();
     }
 
-    // GET /api/denuncias/{id}
     @GetMapping("/{id}")
     public ResponseEntity<Denuncia> obtenerPorId(@PathVariable Long id) {
         return denunciaRepository.findById(id)
@@ -39,7 +36,6 @@ public class DenunciaController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // PUT /api/denuncias/{id}
     @PutMapping("/{id}")
     public ResponseEntity<Denuncia> actualizar(@PathVariable Long id, @RequestBody Denuncia datos) {
         return denunciaRepository.findById(id)
@@ -52,7 +48,6 @@ public class DenunciaController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // DELETE /api/denuncias/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         if (!denunciaRepository.existsById(id)) {
