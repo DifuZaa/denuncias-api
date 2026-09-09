@@ -1,0 +1,93 @@
+{
+  "info": {
+    "name": "Denuncias API - Primer avance",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8080" },
+    { "key": "denuncia_id", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "1. Crear denuncia",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{base_url}}/api/denuncias",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tipoDenuncia\": \"MALTRATO_PSICOLOGICO\",\n  \"descripcion\": \"El docente de alemán habría maltratado psicológicamente a la estudiante.\",\n  \"nombreDenunciante\": \"María Pérez\",\n  \"nombreAfectado\": \"Estudiante - 3ro de secundaria\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 201 Created', function () { pm.response.to.have.status(201); });",
+              "var jsonData = pm.response.json();",
+              "pm.collectionVariables.set('denuncia_id', jsonData.id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Listar denuncias",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/denuncias"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": { "exec": ["pm.test('Status 200 OK', function () { pm.response.to.have.status(200); });"] }
+        }
+      ]
+    },
+    {
+      "name": "3. Obtener denuncia por id",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/denuncias/{{denuncia_id}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": { "exec": ["pm.test('Status 200 OK', function () { pm.response.to.have.status(200); });"] }
+        }
+      ]
+    },
+    {
+      "name": "4. Actualizar denuncia",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{base_url}}/api/denuncias/{{denuncia_id}}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"estado\": \"EN_ATENCION\",\n  \"descripcion\": \"Se citó a los involucrados.\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": { "exec": ["pm.test('Status 200 OK', function () { pm.response.to.have.status(200); });"] }
+        }
+      ]
+    },
+    {
+      "name": "5. Eliminar denuncia",
+      "request": {
+        "method": "DELETE",
+        "url": "{{base_url}}/api/denuncias/{{denuncia_id}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": { "exec": ["pm.test('Status 204 No Content', function () { pm.response.to.have.status(204); });"] }
+        }
+      ]
+    }
+  ]
+}
