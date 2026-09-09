@@ -1,7 +1,7 @@
 package com.maxuhle.denuncias.controller;
 
 import com.maxuhle.denuncias.model.Denuncia;
-import com.maxuhle.denuncias.repository.DenunciaRepository;
+import com.maxuhle.denuncias.service.DenunciaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,48 +12,42 @@ import java.util.List;
 @RequestMapping("/api/denuncias")
 public class DenunciaController {
 
-    private final DenunciaRepository denunciaRepository;
+    private final DenunciaService denunciaService;
 
-    public DenunciaController(DenunciaRepository denunciaRepository) {
-        this.denunciaRepository = denunciaRepository;
+    public DenunciaController(DenunciaService denunciaService) {
+        this.denunciaService = denunciaService;
     }
 
     @PostMapping
     public ResponseEntity<Denuncia> crear(@RequestBody Denuncia denuncia) {
-        Denuncia guardada = denunciaRepository.save(denuncia);
+        Denuncia guardada = denunciaService.crear(denuncia);
         return ResponseEntity.status(HttpStatus.CREATED).body(guardada);
     }
 
     @GetMapping
     public List<Denuncia> listar() {
-        return denunciaRepository.findAll();
+        return denunciaService.listarTodas();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Denuncia> obtenerPorId(@PathVariable Long id) {
-        return denunciaRepository.findById(id)
+        return denunciaService.obtenerPorId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Denuncia> actualizar(@PathVariable Long id, @RequestBody Denuncia datos) {
-        return denunciaRepository.findById(id)
-                .map(existente -> {
-                    existente.setEstado(datos.getEstado());
-                    existente.setDescripcion(datos.getDescripcion());
-                    Denuncia actualizada = denunciaRepository.save(existente);
-                    return ResponseEntity.ok(actualizada);
-                })
+        return denunciaService.actualizar(id, datos)
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        if (!denunciaRepository.existsById(id)) {
+        if (!denunciaService.eliminar(id)) {
             return ResponseEntity.notFound().build();
         }
-        denunciaRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 }
